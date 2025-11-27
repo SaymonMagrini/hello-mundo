@@ -1,5 +1,5 @@
 <?php
-class Config
+class Connect
 {
     private $dbHost = "";
     private $dbName = "";
