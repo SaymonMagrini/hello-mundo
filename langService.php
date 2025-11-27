@@ -13,16 +13,16 @@ class LangService
 		$this->language = $language;
 	}
 
-	public function inserir()
-	{ //create
+	public function create()
+	{
 		$query = 'insert into tb_languages(language)values(:language)';
 		$stmt = $this->connect->prepare($query);
 		$stmt->bindValue(':language', $this->language->__get('language'));
 		$stmt->execute();
 	}
 
-	public function recuperar()
-	{ //read
+	public function read()
+	{
 		$query = '
 			select 
 				t.id, s.status, t.language 
@@ -35,8 +35,8 @@ class LangService
 		return $stmt->fetchAll(PDO::FETCH_OBJ);
 	}
 
-	public function atualizar()
-	{ //update
+	public function update()
+	{
 
 		$query = "update tb_languages set language = ? where id = ?";
 		$stmt = $this->connect->prepare($query);
@@ -54,17 +54,8 @@ class LangService
 		$stmt->execute();
 	}
 
-	public function marcarRealizada()
-	{ //update
 
-		$query = "update tb_languages set id_status = ? where id = ?";
-		$stmt = $this->connect->prepare($query);
-		$stmt->bindValue(1, $this->language->__get('id_status'));
-		$stmt->bindValue(2, $this->language->__get('id'));
-		return $stmt->execute();
-	}
-
-	public function recuperarTarefasPendentes()
+	public function view()
 	{
 		$query = '
 			select 
