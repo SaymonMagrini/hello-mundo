@@ -1,19 +1,17 @@
 <?php
 
-class language {
-	private $id;
-	private $name;
-	private $hello_world;
-	private $registered_at;
+class Language {
+    private $id;
+    private $lang;
+    private $hello_world;
+    private $registered_at;
 
-	public function __get($attribute) {
-		return $this->$attribute;
-	}
+    public function __get($attr) {
+        return $this->$attr;
+    }
 
-	public function __set($attribute, $value) {
-		$this->$attribute = $value;
-		return $this;
-	}
+    public function __set($attr, $value) {
+        $this->$attr = $value;
+        return $this;
+    }
 }
-
-?>

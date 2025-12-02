@@ -1,76 +1,50 @@
 <?php
 
 //CRUD
-class LangService
-{
+class LangService {
 
-	private $connect;
-	private $language;
+    private $pdo;
+    private $language;
 
-	public function __construct(Connect $connect, language $language)
-	{
-		$this->connect = $connect->conectar();
-		$this->language = $language;
-	}
+    public function __construct(Connect $connect, Language $language) {
+        $this->pdo = $connect->connect();
+        $this->language = $language;
+    }
 
-	public function create()
-	{
-		$query = 'insert into tb_languages(language)values(:language)';
-		$stmt = $this->connect->prepare($query);
-		$stmt->bindValue(':language', $this->language->__get('language'));
-		$stmt->execute();
-	}
+    public function create() {
+        $sql = "INSERT INTO languages(lang, hello_world)
+                VALUES(:lang, :hello)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':lang', $this->language->__get('lang'));
+        $stmt->bindValue(':hello', $this->language->__get('hello_world'));
+        return $stmt->execute();
+    }
 
-	public function read()
-	{
-		$query = '
-			select 
-				t.id, s.status, t.language 
-			from 
-				tb_languages as t
-				left join tb_status as s on (t.id_status = s.id)
-		';
-		$stmt = $this->connect->prepare($query);
-		$stmt->execute();
-		return $stmt->fetchAll(PDO::FETCH_OBJ);
-	}
+    public function read() {
+        $sql = "SELECT * FROM languages ORDER BY id DESC";
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_OBJ);
+    }
 
-	public function update()
-	{
+    public function find($id) {
+        $sql = "SELECT * FROM languages WHERE id = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
 
-		$query = "update tb_languages set language = ? where id = ?";
-		$stmt = $this->connect->prepare($query);
-		$stmt->bindValue(1, $this->language->__get('language'));
-		$stmt->bindValue(2, $this->language->__get('id'));
-		return $stmt->execute();
-	}
+    public function update() {
+        $sql = "UPDATE languages SET lang=?, hello_world=? WHERE id=?";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            $this->language->__get('lang'),
+            $this->language->__get('hello_world'),
+            $this->language->__get('id')
+        ]);
+    }
 
-	public function remover()
-	{ //delete
-
-		$query = 'delete from tb_languages where id = :id';
-		$stmt = $this->connect->prepare($query);
-		$stmt->bindValue(':id', $this->language->__get('id'));
-		$stmt->execute();
-	}
-
-
-	public function view()
-	{
-		$query = '
-			select 
-				t.id, s.status, t.language 
-			from 
-				tb_languages as t
-				left join tb_status as s on (t.id_status = s.id)
-			where
-				t.id_status = :id_status
-		';
-		$stmt = $this->connect->prepare($query);
-		$stmt->bindValue(':id_status', $this->language->__get('id_status'));
-		$stmt->execute();
-		return $stmt->fetchAll(PDO::FETCH_OBJ);
-	}
+    public function delete() {
+        $sql = "DELETE FROM languages WHERE id = ?";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$this->language->__get('id')]);
+    }
 }
-
-?>
